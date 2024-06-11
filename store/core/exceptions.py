@@ -8,3 +8,7 @@ class BaseException(Exception):
 
 class NotFoundException(BaseException):
     message = "Not Found"
+
+
+class UnprocessableEntityException(BaseException):
+    message = "Unprocessable entity"
