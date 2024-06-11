@@ -93,10 +93,12 @@ async def test_controller_patch_should_return_success(
 
     content = response.json()
 
+    assert response.status_code == status.HTTP_200_OK
+    assert content["updated_at"] != content["created_at"]
+
     del content["created_at"]
     del content["updated_at"]
 
-    assert response.status_code == status.HTTP_200_OK
     assert content == {
         "id": str(product_inserted.id),
         "name": "Iphone 14 Pro Max",
