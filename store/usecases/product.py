@@ -31,7 +31,9 @@ class ProductUsecase:
 
         return ProductOut(**result)
 
-    async def query(self) -> List[ProductOut]:
+    async def query(self, low: float = None, high: float = None) -> List[ProductOut]:
+        if low != None and high != None:
+            return [ProductOut(**item) async for item in self.collection.find(filter={"price": {"$gt": low, "$lt": high}})]
         return [ProductOut(**item) async for item in self.collection.find()]
 
     async def update(self, id: UUID, body: ProductUpdate) -> ProductUpdateOut:

@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Body, Depends, HTTPException, Path, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Path, status, Query
 from pydantic import UUID4
 from store.core.exceptions import NotFoundException, UnprocessableEntityException
 
@@ -30,8 +30,12 @@ async def get(
 
 
 @router.get(path="/", status_code=status.HTTP_200_OK)
-async def query(usecase: ProductUsecase = Depends()) -> List[ProductOut]:
-    return await usecase.query()
+async def query(
+        usecase: ProductUsecase = Depends(),
+        low: float = Query(None),
+        high: float = Query(None)
+) -> List[ProductOut]:
+    return await usecase.query(low=low, high=high)
 
 
 @router.patch(path="/{id}", status_code=status.HTTP_200_OK)
