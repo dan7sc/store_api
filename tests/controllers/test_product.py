@@ -22,6 +22,29 @@ async def test_controller_create_should_return_success(client, products_url):
         "status": True,
     }
 
+async def test_controller_create_should_return_field_required(client, products_url):
+    data = product_data()
+    del data["price"]
+
+    response = await client.post(products_url, json=data)
+
+    content = response.json()
+
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert content["detail"][0]["type"] == "missing"
+    assert content["detail"][0]["msg"] == "Field required"
+
+async def test_controller_create_should_return_invalid_input(client, products_url):
+    data = product_data()
+    data["price"] = "abc"
+
+    response = await client.post(products_url, json=data)
+
+    content = response.json()
+
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert content["detail"][0]["type"] == "decimal_parsing"
+    assert content["detail"][0]["msg"] == "Input should be a valid decimal"
 
 async def test_controller_get_should_return_success(
     client, products_url, product_inserted
